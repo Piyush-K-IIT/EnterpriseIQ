@@ -6,6 +6,25 @@ EnterpriseIQ is an AI-powered enterprise assistant that combines **LLM-based rea
 
 ---
 
+## Table of Contents
+
+- [Features](#-features)
+- [System Architecture](#-system-architecture)
+- [RAG Pipeline](#-rag-pipeline)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Example Queries](#-example-queries)
+- [Adding Documents](#-adding-documents)
+- [Agent Tools](#-agent-tools)
+- [Security](#-security)
+- [CI](#-ci)
+- [Future Improvements](#-future-improvements)
+- [Author](#-author)
+- [License](#-license)
+
+---
+
 ## 🚀 Features
 
 - 📚 **Document RAG** — Ask questions about uploaded enterprise documents.
@@ -23,59 +42,61 @@ EnterpriseIQ is an AI-powered enterprise assistant that combines **LLM-based rea
 
 ## 🏗️ System Architecture
 
+```text
+                     ┌─────────────────────┐
+                     │     Streamlit UI    │
+                     └──────────┬──────────┘
+                                │
+                                ▼
+                     ┌─────────────────────┐
+                     │    LangGraph Agent  │
+                     │      + Gemini       │
+                     └──────────┬──────────┘
+                                │
+                ┌───────────────┼───────────────┐
+                │               │               │
+                ▼               ▼               ▼
+         ┌────────────┐  ┌────────────┐  ┌──────────────┐
+         │  Document  │  │ Calculator │  │   Support    │
+         │   Search   │  │    Tool    │  │ Ticket Tool  │
+         └─────┬──────┘  └────────────┘  └──────────────┘
+               │
+               ▼
+         ┌────────────┐
+         │  ChromaDB  │
+         │ Vector DB  │
+         └─────┬──────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │ Sentence Transformer │
+    │      Embeddings      │
+    └──────────────────────┘
+```
 
-                         ┌─────────────────────┐
-                         │     Streamlit UI    │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │    LangGraph Agent  │
-                         │      + Gemini       │
-                         └──────────┬──────────┘
-                                    │
-                    ┌───────────────┼───────────────┐
-                    │               │               │
-                    ▼               ▼               ▼
-             ┌────────────┐  ┌────────────┐  ┌──────────────┐
-             │ Document   │  │ Calculator │  │   Support    │
-             │ Search     │  │   Tool     │  │ Ticket Tool  │
-             └─────┬──────┘  └────────────┘  └──────────────┘
-                   │
-                   ▼
-             ┌────────────┐
-             │ ChromaDB   │
-             │ Vector DB  │
-             └─────┬──────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │ Sentence Transformer │
-        │     Embeddings       │
-        └──────────────────────┘
+---
 
-
-
-🔄 RAG Pipeline
+## 🔄 RAG Pipeline
 
 EnterpriseIQ uses a Retrieval-Augmented Generation pipeline to ground responses in indexed documents.
 
+```text
 PDF Documents
       │
       ▼
-PDF Loader
+  PDF Loader
       │
       ▼
-Text Splitting
+ Text Splitting
       │
       ▼
 Sentence Transformer Embeddings
       │
       ▼
-ChromaDB
+   ChromaDB
       │
       ▼
-User Question
+ User Question
       │
       ▼
 Semantic Retrieval
@@ -84,16 +105,16 @@ Semantic Retrieval
 Relevant Context
       │
       ▼
-Gemini
+    Gemini
       │
       ▼
 Grounded Answer + Sources
+```
 
+---
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-
-----------------------------------------------------
 | Technology            | Purpose                  |
 | --------------------- | ------------------------ |
 | Python                | Application development  |
@@ -106,12 +127,11 @@ Grounded Answer + Sources
 | PyPDF                 | PDF document loading     |
 | GitHub Actions        | CI validation            |
 
+---
 
+## 📁 Project Structure
 
-
-📁 Project Structure
-
-
+```text
 EnterpriseIQ/
 │
 ├── app/
@@ -132,61 +152,102 @@ EnterpriseIQ/
 │       └── ci.yml
 │
 ├── .gitignore
-├── Dockerfile
 ├── .dockerignore
+├── Dockerfile
 ├── requirements.txt
 ├── create_pdfs.py
 └── README.md
+```
 
+---
 
-⚙️ Installation
+## ⚙️ Installation
 
-1. Clone the repository
+**1. Clone the repository**
+
+```bash
 git clone https://github.com/Piyush-K-IIT/EnterpriseIQ.git
 cd EnterpriseIQ
-2. Create a virtual environment
+```
+
+**2. Create a virtual environment**
+
+```bash
 python3 -m venv venv
+```
 
 Activate it:
 
-macOS / Linux
-
+```bash
+# macOS / Linux
 source venv/bin/activate
 
-Windows
-
+# Windows
 venv\Scripts\activate
-3. Install dependencies
+```
+
+**3. Install dependencies**
+
+```bash
 pip install -r requirements.txt
-4. Configure the Gemini API key
+```
 
-Create a .env file in the project root:
+**4. Configure the Gemini API key**
 
+Create a `.env` file in the project root:
+
+```env
 GEMINI_API_KEY=your_api_key_here
+```
 
-Do not commit the .env file.
+> ⚠️ Do not commit the `.env` file.
 
-5. Run the application
+**5. Run the application**
+
+```bash
 streamlit run app/main.py
+```
 
 The application will open in your browser.
 
-💡 Example Queries
-📚 Document Search
+---
+
+## 💡 Example Queries
+
+**📚 Document Search**
+
+```text
 What is the annual leave entitlement?
 What are the company's password requirements?
 What is the maximum hotel reimbursement for domestic travel?
-🧮 Calculator
+```
+
+**🧮 Calculator**
+
+```text
 Calculate 6000 * 3 + 1200
-🎫 Support Ticket
+```
+
+**🎫 Support Ticket**
+
+```text
 Create a support ticket for my laptop not connecting to Wi-Fi.
-🔗 Multi-Tool Query
+```
+
+**🔗 Multi-Tool Query**
+
+```text
 What is the hotel reimbursement limit for three nights?
 Calculate the total reimbursement.
-📄 Adding Documents
+```
 
-EnterpriseIQ allows users to upload PDF documents directly through the Streamlit interface.
+---
 
+## 📄 Adding Documents
+
+EnterpriseIQ lets you upload PDF documents directly through the Streamlit interface.
+
+```text
 Upload PDF
      │
      ▼
@@ -206,65 +267,67 @@ Store in ChromaDB
      │
      ▼
 Ready for Retrieval
+```
 
-After indexing, users can immediately ask questions about the newly added documents.
+After indexing, you can immediately ask questions about the newly added documents.
 
-🔧 Agent Tools
+---
 
-EnterpriseIQ currently provides three tools to the AI agent.
+## 🔧 Agent Tools
 
-1. Document Search
+EnterpriseIQ currently provides three tools to the AI agent:
 
-Retrieves relevant information from the indexed enterprise documents.
+| Tool            | Function                        | Description                                                        |
+| --------------- | ------------------------------- | ------------------------------------------------------------------ |
+| Document Search | `search_documents(question)`    | Retrieves relevant information from the indexed enterprise documents. |
+| Calculator      | `calculate(expression)`         | Evaluates mathematical expressions using a restricted AST-based evaluator. |
+| Support Ticket  | `create_support_ticket(issue)`  | Creates a support ticket for an employee issue.                    |
 
-search_documents(question)
-2. Calculator
+The LangGraph agent decides when a tool is required and executes the appropriate one.
 
-Performs mathematical expressions using a restricted AST-based evaluator.
+---
 
-calculate(expression)
-3. Support Ticket
+## 🔐 Security
 
-Creates a support ticket for an employee issue.
+- API credentials are stored using environment variables.
+- `.env` is excluded using `.gitignore`.
+- The calculator uses a restricted AST-based evaluator instead of unrestricted code execution.
+- Uploaded documents are processed through the controlled ingestion pipeline.
 
-create_support_ticket(issue)
+---
 
-The LangGraph agent decides when a tool is required and executes the appropriate tool.
+## 🧪 CI
 
-🔐 Security
-API credentials are stored using environment variables.
-.env is excluded using .gitignore.
-The calculator uses a restricted AST-based evaluator instead of unrestricted code execution.
-Uploaded documents are processed through the controlled ingestion pipeline.
-🧪 CI
+GitHub Actions is configured to perform basic project validation. The CI workflow:
 
-GitHub Actions is configured to perform basic project validation.
+1. Sets up the Python environment.
+2. Installs project dependencies.
+3. Compiles the application modules to detect syntax errors.
+4. Runs automatically on pushes and pull requests to the `main` branch.
 
-The CI workflow:
+---
 
-Installs project dependencies.
-Sets up the Python environment.
-Compiles the application modules to detect syntax errors.
-Runs automatically on pushes and pull requests to the main branch.
-🚀 Future Improvements
+## 🚀 Future Improvements
 
-Potential future improvements include:
+- [ ] Improved RAG retrieval and re-ranking
+- [ ] Automated RAG evaluation
+- [ ] Conversation memory
+- [ ] Authentication and role-based access
+- [ ] Streaming responses
+- [ ] Production observability
+- [ ] Cloud deployment
+- [ ] Persistent production vector storage
 
-Improved RAG retrieval and re-ranking
-Automated RAG evaluation
-Conversation memory
-Authentication and role-based access
-Streaming responses
-Production observability
-Cloud deployment
-Persistent production vector storage
-👨‍💻 Author
+---
 
-Piyush Kumar
+## 👨‍💻 Author
 
+**Piyush Kumar**
 B.Tech. Mathematics & Computing
 Indian Institute of Technology Mandi
 
-📄 License
+---
+
+## 📄 License
 
 This project is intended for educational and portfolio purposes.
