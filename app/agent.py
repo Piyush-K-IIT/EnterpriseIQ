@@ -35,19 +35,29 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # ENVIRONMENT
 # =========================================================
 
+# Load .env for local development
 load_dotenv(
     PROJECT_ROOT / ".env"
 )
 
+# First try environment variable
 api_key = os.getenv(
     "GEMINI_API_KEY"
 )
 
+# If running on Streamlit Cloud, read from Streamlit Secrets
+if not api_key:
+    try:
+        import streamlit as st
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        api_key = None
+
 if not api_key:
     raise ValueError(
-        "GEMINI_API_KEY not found in .env"
+        "GEMINI_API_KEY is not configured. "
+        "Set it in .env locally or Streamlit Secrets when deployed."
     )
-
 
 # =========================================================
 # GEMINI
